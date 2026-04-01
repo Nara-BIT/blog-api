@@ -2,6 +2,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+const authRoutes = require('./routes/authRoutes');
 
 // 2. Load environment variables
 dotenv.config();
@@ -20,6 +21,14 @@ const postRoutes = require('./routes/postRoutes');
 app.use('/api/posts', postRoutes);
 const categoryRoutes = require('./routes/categoryRoutes');
 app.use('/api/categories', categoryRoutes);
+const authRoute = require('./routes/authRoutes');
+app.use('/api/auth',authRoute);
+
+
+// ... other middleware ...
+
+app.use('/api/auth', authRoutes);
+app.use('/api/posts', postRoutes);
 
 // 6. Start the Server
 const PORT = process.env.PORT || 5000;

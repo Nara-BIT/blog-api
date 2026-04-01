@@ -1,5 +1,5 @@
 const Post = require('../models/Post');
-
+const Category = require('../models/Category');
 exports.createPost= async(req,res)=>{
     try{
         const newPost=await Post.create(req.body)
@@ -12,7 +12,12 @@ exports.createPost= async(req,res)=>{
 
 exports.getPosts=async(req,res)=>{
     try{
-        const posts=await Post.find().populate('category','name');
+        let filter={};
+        if(req.query.category){
+            filter.category=req.query.category;
+        }
+
+        const posts=await Post.find(filter).populate('category','name').sort({createdAt:-1});
         res.status(200).json({success:true, count:posts.length, data:posts})
     }
     catch(err){

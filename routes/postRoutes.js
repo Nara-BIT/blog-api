@@ -1,12 +1,16 @@
 const express = require('express');
-const router=express.Router();
-const {createPost,getPost,getPosts,updatePost,deletePost}=require('../controllers/postController')
+const router = express.Router();
+const postController = require('../controllers/postController');
 
+// 1. Import your new bouncer
+const authenticate = require('../middleware/auth');
 
-router.post('/',createPost);
-router.get('/',getPosts);
+// 2. Protect specific routes
+// Anyone can view posts (GET), so no middleware there
+router.get('/', postController.getPosts);
 
-router.get('/:id',getPost);
-router.put('/:id',updatePost);
-router.delete('/:id',deletePost)
-module.exports=router;
+// Only logged-in users can create or delete (POST/DELETE)
+router.post('/', authenticate, postController.createPost);
+router.delete('/:id', authenticate, postController.deletePost);
+
+module.exports = router;
