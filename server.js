@@ -29,7 +29,7 @@ app.use('/api/auth',authRoute);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/posts', postRoutes);
-
+app.use('/api/users', require('./routes/userRoutes'));
 // 6. Start the Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

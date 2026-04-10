@@ -18,3 +18,11 @@ exports.protect = async(req,res,next)=>{
         res.status(401).json({error:'Not authorized, no token'});
     }
 }
+exports.authorize=(...roles)=>{
+    return (req,res,next)=>{
+        if(!roles.includes(req.user.role)){
+            return res.status(403).json({error:`User role %{req.user.role} is not authorized to access this route`});
+        }
+        next();
+    }
+}

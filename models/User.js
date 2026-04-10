@@ -20,6 +20,12 @@ const UserSchema = new mongoose.Schema({
         required: [true, 'Please add a password'],
         minlength: 6,
         select: false // This hides the password by default when we fetch user data
+    },
+    
+    role: {
+        type: String,
+        enum: ['user', 'admin'], 
+        default: 'user'
     }
 }, { timestamps: true })
 UserSchema.pre('save',async function(next){

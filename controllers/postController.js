@@ -60,3 +60,49 @@ exports.deletePost = async(req,res)=>{
         res.status(500).json({error:"could not delete the post"});
     }
 };
+
+exports.getPosts = async (req, res) => {
+    try {
+        let query;
+
+        // 1. Create a copy of req.query
+        const reqQuery = { ...req.query };
+
+        // Fields to exclude from matching (we handle these separately)
+        const removeFields = ['select', 'sort', 'page', 'limit'];
+        removeFields.forEach(param => delete reqQuery[param]);
+
+        // 2. FILTERING (Advanced: for price ranges like [gt] or [lt])
+        let queryStr = JSON.stringify(reqQuery);
+        queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
+        
+        query = Post.find(JSON.parse(queryStr));
+
+        // 3. SORTING
+        if (req.query.sort) {
+            const sortBy = req.query.sort.split(',').join(' ');
+            query = query.sort(sortBy);
+        } else {
+            query = query.sort('-createdAt'); // Default: Newest first
+        }
+
+        // 4. PAGINATION
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 5; // Default 5 posts per page
+        const skip = (page - 1) * limit;
+
+        query = query.skip(skip).limit(limit);
+
+        // Execute query
+        const posts = await query;
+
+        res.status(200).json({
+            success: true,
+            count: posts.length,
+            page,
+            data: posts
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
