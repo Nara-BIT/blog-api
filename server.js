@@ -3,7 +3,6 @@ const express = require('express');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
-
 // 2. Load environment variables
 dotenv.config();
 
@@ -11,6 +10,11 @@ dotenv.config();
 const app = express();
 app.use(express.json()); // Allows the server to read JSON from Postman
 
+const fs = require('fs');
+
+// Check if uploads folder exists, if not, create it
+
+app.use('/uploads', express.static('uploads'));
 // 4. Connect to Database (Simplified for now)
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ Database Connected"))

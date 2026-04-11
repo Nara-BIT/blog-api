@@ -8,6 +8,10 @@ const PostSchema = new mongoose.Schema({
         type:String,
         required:true
     },
+    image:{
+        type:String,
+        default: 'no-photo.jpg'
+    }
 },{timestamps:true});
 
 module.exports=mongoose.model('Post',PostSchema)
