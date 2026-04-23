@@ -2,9 +2,11 @@ const express = require('express');
 const router = express.Router();
 const postController = require('../controllers/postController');
 const upload = require('../middleware/fileUpload');
+const { protect, authorize } = require('../middleware/authMiddleware');
 // 1. Import your new bouncer
 const authenticate = require('../middleware/auth');
-router.post('/',upload.single('image'),postController.createPost);
+router.post('/',protect,upload.single('image'),postController.createPost);
+router.delete('/:id', protect, authorize('admin'), postController.deletePost);
 // 2. Protect specific routes
 // Anyone can view posts (GET), so no middleware there
 router.get('/', postController.getPosts);

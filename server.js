@@ -3,17 +3,21 @@ const express = require('express');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
+const cors = require('cors');
+const reviewRoutes = require('./routes/reviewRoutes');
+const productRoutes = require('./routes/productRoutes');
 // 2. Load environment variables
 dotenv.config();
 
 // 3. Initialize the App
 const app = express();
 app.use(express.json()); // Allows the server to read JSON from Postman
-
+app.use(cors()); 
 const fs = require('fs');
 
 // Check if uploads folder exists, if not, create it
-
+app.use('/api/reviews',reviewRoutes);
+app.use('/api/products', productRoutes);
 app.use('/uploads', express.static('uploads'));
 // 4. Connect to Database (Simplified for now)
 mongoose.connect(process.env.MONGO_URI)
