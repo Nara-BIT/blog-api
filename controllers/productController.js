@@ -31,3 +31,35 @@ export const getProduct = async (req, res) => {
         res.status(500).json({message:err.message});
     }
 }
+
+export const getProductStats=async(req,res)=>{
+    try{
+        const stats= await Product.aggregate([
+            {
+                $match:{
+                    price: {$gte:100}
+                }
+            },
+            {
+                $group: {
+                    _id: {$toUpper: '$category'},
+                    numProducts : {$sum:1},
+                    avgPrice: {$avg: '$price'},
+                    minPrice: {$min : '$price'},
+                    maxPrice: {$max: '$price'},
+                    totalInvetonryPrice: {$sum: {$multiply:['$price','$stock']}}
+                }
+            },
+            {
+                $sort: {numProducts: -1}
+            }
+        ]);
+        res.status(200).json({
+            status: 'success',
+            data: stats
+        })
+    }
+    catch(err){
+        res.status(500).json({message:err.message});
+    }
+}
